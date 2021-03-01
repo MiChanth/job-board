@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using JobBoardApi;
 using JobBoardApi.Dtos;
 using JobBoardApi.Models;
 using JobBoardApi.Repositories;
@@ -28,7 +27,7 @@ namespace JobBoardApi.Controllers
             return jobs;
         }
 
-        // Get /job/{id}
+        // Get /jobs/{id}
         [HttpGet("{id}")]
         public ActionResult<JobDto> GetJob(Guid id){
             var job = repository.GetJob(id);
