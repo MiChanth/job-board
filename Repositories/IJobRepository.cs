@@ -1,20 +1,21 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using JobBoardApi.Models;
 
 namespace JobBoardApi.Repositories
 {
     public interface IJobRepository
     {
-        Job GetJob(Guid id);
+        Task<Job> GetJobAsync(Guid id);
 
-        IEnumerable<Job> GetJobs();
+        Task<IEnumerable<Job>> GetJobsAsync();
 
-        void CreateJob(Job job);
+        Task CreateJobAsync(Job job);
 
-        void UpdateJob(Job job);
+        Task UpdateJobAsync(Job job);
 
-        void DeleteJob(Guid id);
+        Task DeleteJobAsync(Guid id);
     }
 }
     
