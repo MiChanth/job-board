@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using JobBoardApi.Models;
 
 namespace JobBoardApi.Repositories
@@ -15,31 +16,35 @@ namespace JobBoardApi.Repositories
             new Job { Id = Guid.NewGuid(), Name = "FullStack", Description = "Join an amazing ESN", Country = "fr" }
         };
 
-        public IEnumerable<Job> GetJobs()
+        public async Task<IEnumerable<Job>> GetJobsAsync()
         {
-            return jobs;
+            return await Task.FromResult(jobs);
         }
 
-        public Job GetJob(Guid id)
+        public async  Task<Job> GetJobAsync(Guid id)
         {
-            return jobs.Where(job => job.Id == id).SingleOrDefault();
+            var job = jobs.Where(job => job.Id == id).SingleOrDefault();
+            return await Task.FromResult(job);
         }
 
-        public void CreateJob(Job job)
+        public async Task CreateJobAsync(Job job)
         {
             jobs.Add(job);
+            await Task.CompletedTask;
         }
 
-        public void UpdateJob(Job job)
+        public async Task UpdateJobAsync(Job job)
         {
             var index = jobs.FindIndex(existingJob => existingJob.Id == job.Id);
             jobs[index] = job;
+            await Task.CompletedTask;
         }
 
-        public void DeleteJob(Guid id)
+        public async Task DeleteJobAsync(Guid id)
         {
             var index = jobs.FindIndex(existingJob => existingJob.Id == id);
             jobs.RemoveAt(index);
+            await Task.CompletedTask;
         }
     }
 }

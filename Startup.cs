@@ -42,7 +42,9 @@ namespace JobBoardApi
             });
             //services.AddSingleton<IJobRepository, InMemJobRepository>();
             services.AddSingleton<IJobRepository, MongoDbJobsRepository>();
-            services.AddControllers();
+            services.AddControllers(options => {
+                options.SuppressAsyncSuffixInActionNames = false;
+            });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "JobBoardApi", Version = "v1" });

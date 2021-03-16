@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using JobBoardApi.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -20,32 +21,32 @@ namespace JobBoardApi.Repositories
             jobsCollection = database.GetCollection<Job>(collectionName);
         }
 
-        public void CreateJob(Job job)
+        public async Task CreateJobAsync(Job job)
         {
-            jobsCollection.InsertOne(job);
+            await jobsCollection.InsertOneAsync(job);
         }
 
-        public void DeleteJob(Guid id)
-        {
-            var filter = filterBuilder.Eq(job => job.Id, id);
-            jobsCollection.DeleteOne(filter);
-        }
-
-        public Job GetJob(Guid id)
+        public async Task DeleteJobAsync(Guid id)
         {
             var filter = filterBuilder.Eq(job => job.Id, id);
-            return jobsCollection.Find(filter).SingleOrDefault();
+            await jobsCollection.DeleteOneAsync(filter);
         }
 
-        public IEnumerable<Job> GetJobs()
+        public async Task<Job> GetJobAsync(Guid id)
         {
-            return jobsCollection.Find(new BsonDocument()).ToList();
+            var filter = filterBuilder.Eq(job => job.Id, id);
+            return await jobsCollection.Find(filter).SingleOrDefaultAsync();
         }
 
-        public void UpdateJob(Job job)
+        public async Task<IEnumerable<Job>> GetJobsAsync()
+        {
+            return await jobsCollection.Find(new BsonDocument()).ToListAsync();
+        }
+
+        public async Task UpdateJobAsync(Job job)
         {
              var filter = filterBuilder.Eq(existingJob => existingJob.Id, job.Id);
-             jobsCollection.ReplaceOne(filter, job);
+             await jobsCollection.ReplaceOneAsync(filter, job);
         }
     }
 }

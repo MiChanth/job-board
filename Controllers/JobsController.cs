@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using JobBoardApi.Dtos;
 using JobBoardApi.Models;
 using JobBoardApi.Repositories;
@@ -22,15 +23,16 @@ namespace JobBoardApi.Controllers
         
         // GET /jobs
         [HttpGet]
-        public IEnumerable<JobDto> GetJobs(){
-            var jobs = repository.GetJobs().Select(job => job.AsDto());
+        public async Task<IEnumerable<JobDto>> GetJobsAsync(){
+            var jobs = (await repository.GetJobsAsync())
+                        .Select(job => job.AsDto());
             return jobs;
         }
 
         // Get /jobs/{id}
         [HttpGet("{id}")]
-        public ActionResult<JobDto> GetJob(Guid id){
-            var job = repository.GetJob(id);
+        public async Task<ActionResult<JobDto>> GetJobAsync(Guid id){
+            var job = await repository.GetJobAsync(id);
 
             if(job is null)
             {
@@ -42,7 +44,7 @@ namespace JobBoardApi.Controllers
 
         // POST /jobs
         [HttpPost]
-        public ActionResult<JobDto> CreateJob(CreateJobDto jobDto){
+        public async Task<ActionResult<JobDto>> CreateJobAsync(CreateJobDto jobDto){
             Job job = new(){
                 Id = Guid.NewGuid(),
                 Name = jobDto.Name,
@@ -50,16 +52,16 @@ namespace JobBoardApi.Controllers
                 Country = jobDto.Country
             };
 
-            repository.CreateJob(job);
+            await repository.CreateJobAsync(job);
 
-            return CreatedAtAction(nameof(GetJob), new {id = job.Id}, job.AsDto());
+            return CreatedAtAction(nameof(GetJobAsync), new {id = job.Id}, job.AsDto());
         }
 
         // PUT /jobs/{id}
         [HttpPut("{id}")]
-        public ActionResult UpdateJob(Guid id, UpdateJobDto jobDto)
+        public async Task<ActionResult> UpdateJob(Guid id, UpdateJobDto jobDto)
         {
-            var existingJob = repository.GetJob(id);
+            var existingJob = await repository.GetJobAsync(id);
 
             if (existingJob is null)
             {
@@ -73,22 +75,22 @@ namespace JobBoardApi.Controllers
                 Country = jobDto.Country
             };
 
-            repository.UpdateJob(updateJob);
+            await repository.UpdateJobAsync(updateJob);
 
             return NoContent();
         }
 
         // DELETE /jobs/{id}
         [HttpDelete("{id}")]
-        public ActionResult DeleteJob(Guid id){
-            var existingJob = repository.GetJob(id);
+        public async Task<ActionResult> DeleteJob(Guid id){
+            var existingJob = await repository.GetJobAsync(id);
 
             if (existingJob is null)
             {
                 return NotFound();
             };
 
-            repository.DeleteJob(id);
+            await repository.DeleteJobAsync(id);
             return NoContent();
         }
     }
